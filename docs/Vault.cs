@@ -111,7 +111,7 @@ namespace docs
 		}
 
 		static string GetTranscriptName(string id, int page){
-			return $"T-{id}-S{page}";
+			return $"T-{id}-{page}";
 		}
 
 		static string GetDocumentName(string id){

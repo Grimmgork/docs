@@ -8,7 +8,7 @@ namespace docs
 	{
 		static void Main(string[] args)
 		{
-			const string vaultDirectory = @"c:\users\eric\desktop\document_vault";
+			const string vaultDirectory = @"d:\document_vault";
 			const string funnel = @"c:\users\eric\desktop\doc.gateway";
 
 			Console.WriteLine("Hello there!");
@@ -25,23 +25,30 @@ namespace docs
 					continue;
 				}
 
+				Console.WriteLine($"{files.Length} files staged:");
+				foreach(string f in files){
+					Console.WriteLine(f);
+				}
 				Console.WriteLine();
-				Console.WriteLine("digesting! ...");
+				Console.WriteLine("tags:");
+				string[] tags = Console.ReadLine().Trim().Split(" ");
+				Console.WriteLine();
+				Console.WriteLine("Adding the following tags:");
+				foreach(string t in tags){
+					Console.WriteLine("\t"+ t);
+				}
+				Console.WriteLine();
+
+				Console.WriteLine("lesgo! ->");
+				Console.WriteLine("searching for text ...");
 
 				DocumentData doc;
-				try
-				{
-					doc = DocumentData.Extract(files, "deu");
-				}
-				catch (Exception e)
-				{
-					Console.WriteLine(e.Message);
-					return;
-				}
+				doc = DocumentData.Extract(files, "deu");
 
 				Vault vault = Vault.Init(vaultDirectory);
-				vault.AddDocument(doc.GetTranscripts(), doc.Pdf, null, null);
+				Console.WriteLine($"addet document -> id={vault.AddDocument(doc.GetTranscripts(), doc.Pdf, tags, null)}");
 
+				Console.WriteLine("clean up temporary files ...");
 				foreach (string s in doc.GetTranscripts()){
 					File.Delete(s);
 				}
@@ -51,7 +58,7 @@ namespace docs
 					File.Delete(s);
 				}
 
-				Console.WriteLine("Done! ~");
+				Console.WriteLine("-> done!");
 				Console.WriteLine();
 				Thread.Sleep(500);
 			}

@@ -63,7 +63,7 @@ namespace docs
 		public static string FormatTranscript(string raw, int maxLineLength){
 
 			raw = raw.Trim();
-			raw = raw.Replace("\r\n", " ");
+			raw = raw.Replace("\n", " ");
 			raw = Regex.Replace(raw, @"[ ]{2,}", @" ", RegexOptions.None);
 
 			return raw;
