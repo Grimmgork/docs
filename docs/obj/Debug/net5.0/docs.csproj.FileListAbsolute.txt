@@ -14,7 +14,6 @@ C:\Users\Eric\projects\docs\docs\bin\Debug\net5.0\docs.dll
 C:\Users\Eric\projects\docs\docs\bin\Debug\net5.0\ref\docs.dll
 C:\Users\Eric\projects\docs\docs\bin\Debug\net5.0\docs.pdb
 C:\Users\Eric\projects\docs\docs\bin\Debug\net5.0\Tesseract.dll
-C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.csprojAssemblyReference.cache
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\Interop.WIA.dll
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.csproj.ResolveComReference.cache
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.GeneratedMSBuildEditorConfig.editorconfig

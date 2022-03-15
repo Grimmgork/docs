@@ -8,7 +8,7 @@ namespace docs
 	{
 		static void Main(string[] args)
 		{
-			const string vaultDirectory = @"D:\document_vault\document_vault";
+			const string vaultDirectory = @"c:\users\eric\desktop\document_vault";
 			const string funnel = @"c:\users\eric\desktop\doc.gateway";
 
 			Console.WriteLine("Hello there!");
