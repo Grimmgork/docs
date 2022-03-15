@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "oHBQZa98w6ZMiIzHUh4B+tF4WsxEeo6BM/vEFY3NUM7O3TbFIir6liSWUpMOI4FOrR6H5J7IbqzukOsEzXZPXQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Eric\\projects\\docs\\docs\\docs.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Eric\\.nuget\\packages\\system.reflection.emit\\4.7.0\\system.reflection.emit.4.7.0.nupkg.sha512",
+    "C:\\Users\\Eric\\.nuget\\packages\\tesseract\\4.1.1\\tesseract.4.1.1.nupkg.sha512"
+  ],
+  "logs": []
+}
