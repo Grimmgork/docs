@@ -10,7 +10,7 @@ namespace docs
 	public class DocumentData
 	{
 		string _pdf;
-		public string Pdf{
+		public string PdfFilePath{
 			get{
 				return _pdf;
 			}
@@ -19,24 +19,28 @@ namespace docs
 			}
 		}
 
-		string[] transcriptFileNames;
-
-		public string[] GetTranscripts(){
-			return (string[]) transcriptFileNames.Clone();
+		string[] _transcripts;
+		public string[] Transcripts{
+			get{
+				return _transcripts;
+			}
+			private set{
+				_transcripts = value;
+			}
 		}
 
 		private DocumentData() { }
 
-		public static DocumentData Extract(string[] sourceImagesPaths, string languageCode)
+		public static DocumentData Aggregate(string tesseractData, string[] sourceImagesPaths, string languageCode)
 		{
 			DocumentData result = new DocumentData();
 			string pdfFileNameWithoutPdfExtension = Path.GetTempFileName();
-			result.Pdf = pdfFileNameWithoutPdfExtension + ".pdf";
-			result.transcriptFileNames = new string[sourceImagesPaths.Length];
+			result.PdfFilePath = pdfFileNameWithoutPdfExtension + ".pdf";
+			result.Transcripts = new string[sourceImagesPaths.Length];
 
-			using (var engine = new TesseractEngine(@"./tessdata", languageCode, EngineMode.Default))
+			using (var engine = new TesseractEngine(tesseractData, languageCode, EngineMode.Default))
 			{
-				using (var renderer = PdfResultRenderer.CreatePdfRenderer(pdfFileNameWithoutPdfExtension, @"./tessdata", false))
+				using (var renderer = PdfResultRenderer.CreatePdfRenderer(pdfFileNameWithoutPdfExtension, tesseractData, false))
 				{
 					renderer.BeginDocument("-");
 					int pageNumber = 1;
@@ -46,10 +50,8 @@ namespace docs
 							using (var page = engine.Process(img))
 							{
 								renderer.AddPage(page);
-
-								string fileName = Path.GetTempFileName();
-								result.transcriptFileNames[pageNumber - 1] = fileName;
-								File.WriteAllText(fileName, FormatTranscript(page.GetText(), 80));
+								string pageContent = page.GetText();
+								result.Transcripts[pageNumber - 1] = FormatTranscript(pageContent, 80);
 							}
 						}
 						pageNumber++;

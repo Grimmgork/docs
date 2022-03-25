@@ -22,6 +22,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="aggr.cmd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="tessdata\config\digits">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

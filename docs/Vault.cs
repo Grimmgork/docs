@@ -44,8 +44,7 @@ namespace docs
 
 			//add all pages of the transcript each in a seperate file
 			for (int i = 0; i < transcripts.Length; i++){
-				string transcript = File.ReadAllText(transcripts[i]);
-				File.WriteAllText(GetTranscriptFilePath(id,i+1), GenerateTranscriptFileContent(transcript, id, i+1, transcripts.Length));
+				File.WriteAllText(GetTranscriptFilePath(id,i+1), GenerateTranscriptFileContent(transcripts[i], id, i+1, transcripts.Length));
 			}
 
 			//add the document-node

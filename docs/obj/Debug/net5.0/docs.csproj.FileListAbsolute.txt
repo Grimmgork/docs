@@ -25,4 +25,5 @@ C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.dll
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\ref\docs.dll
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.pdb
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.genruntimeconfig.cache
+C:\Users\Eric\projects\docs\docs\bin\Debug\net5.0\aggr.cmd
 C:\Users\Eric\projects\docs\docs\obj\Debug\net5.0\docs.csprojAssemblyReference.cache
