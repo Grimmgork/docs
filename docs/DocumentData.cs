@@ -62,8 +62,8 @@ namespace docs
 			return result;
 		}
 
-		public static string FormatTranscript(string raw, int maxLineLength){
-
+		public static string FormatTranscript(string raw, int maxLineLength)
+		{
 			raw = raw.Trim();
 			raw = raw.Replace("\n", " ");
 			raw = Regex.Replace(raw, @"[ ]{2,}", @" ", RegexOptions.None);

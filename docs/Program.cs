@@ -11,40 +11,27 @@ namespace docs
 	{
 		public static string directory;
 		public static readonly string vaultDirectory = @"d:\document_vault";
+		public static readonly Command rootCommand = new Command("root",
+			new Command[] {
+				new Command("add", null, AddDocumentCommand),
+				new Command("remove", null, RemoveDocumentCommand),
+				new Command("dash", null, ShowDashCommand)
+			},
+			null
+		);
 
 		static void Main(string[] args)
 		{
 			directory = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-			RootCommand(args);
+			if(args.Length == 0){
+				args = new string[] { "dash" };
+			}
+
+			rootCommand.Route(args);
 		}
 
-		static void RootCommand(string[] args)
-		{
-			if (args.Length == 0){
-				ShowDash();
-				return;
-			}
-			
-			string command = args[0];
-			args = args.Skip(1).ToArray();
-			switch (command)
-			{
-				case "add":
-					AddDocument(args);
-					break;
-				case "remove":
-					Console.WriteLine("not implemented! ... yet");
-					break;
-				case "find":
-					Console.WriteLine("not implemented! ... yet");
-					break;
-				default:
-					Console.WriteLine($"command {command} not found!");
-					break;
-			}
-		}
 
-		static void ShowDash()
+		static void ShowDashCommand(string[] args)
 		{
 			const string logo = "██████╗  ██████╗  ██████╗███████╗\n" +
 								"██╔══██╗██╔═══██╗██╔════╝██╔════╝\n" +
@@ -65,7 +52,7 @@ namespace docs
 			Console.WriteLine("\tremove [document id]");
 		}
 
-		static void RemoveDocument(string[] args)
+		static void RemoveDocumentCommand(string[] args)
 		{
 			Arguments arguments = Arguments.Parse(args,
 				new string[] { "id" },
@@ -79,7 +66,7 @@ namespace docs
 			Vault vault = Vault.Init(@"d:\document_vault");
 		}
 
-		static void AddDocument(string[] args)
+		static void AddDocumentCommand(string[] args)
 		{
 			Arguments arguments = Arguments.Parse(args,
 				new string[] { "path" },
@@ -90,7 +77,7 @@ namespace docs
 				new string[] { }
 				);
 
-			string[] tags = arguments.GetArgument("tags").Split(",");
+			string[] tags = ParseList(arguments.GetArgument("tags"), ",");
 			string path = arguments.GetArgument("path");
 			string[] files;
 
@@ -124,11 +111,29 @@ namespace docs
 			}
 
 			Console.WriteLine();
+			Console.WriteLine("running ocr ...");
 
 			DocumentData doc = DocumentData.Aggregate(directory + @"\tessdata", files, arguments.GetArgument("language"));
+			Console.WriteLine("ocr done!");
+			Console.WriteLine();
+
 
 			Vault vault = Vault.Init(vaultDirectory);
-			Console.WriteLine($"addet document -> id={vault.AddDocument(doc.Transcripts, doc.PdfFilePath, tags, null)}");
+			Console.WriteLine($"addet document to vault -> id={vault.AddDocument(doc.Transcripts, doc.PdfFilePath, tags, null)}");
+		}
+
+
+		static string[] ParseList(string s, string delim){
+			string[] split = s.Split(delim);
+			List<string> result = new List<string>();
+
+			foreach(string e in split){
+				if (e == null | e == string.Empty)
+					continue;
+				result.Add(e);
+			}
+
+			return result.ToArray();
 		}
 	}
 }
