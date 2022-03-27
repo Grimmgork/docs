@@ -4,6 +4,7 @@ using System.Text;
 using Tesseract;
 using System.IO;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace docs
 {
@@ -33,30 +34,40 @@ namespace docs
 
 		public static DocumentData Aggregate(string tesseractData, string[] sourceImagesPaths, string languageCode)
 		{
-			DocumentData result = new DocumentData();
 			string pdfFileNameWithoutPdfExtension = Path.GetTempFileName();
+
+			DocumentData result = new DocumentData();
 			result.PdfFilePath = pdfFileNameWithoutPdfExtension + ".pdf";
 			result.Transcripts = new string[sourceImagesPaths.Length];
 
-			using (var engine = new TesseractEngine(tesseractData, languageCode, EngineMode.Default))
+			Task<PageRender>[] tasks = new Task<PageRender>[sourceImagesPaths.Length];
+			for (int i = 0; i < sourceImagesPaths.Length; i++)
 			{
-				using (var renderer = PdfResultRenderer.CreatePdfRenderer(pdfFileNameWithoutPdfExtension, tesseractData, false))
+				tasks[i] = Task.Factory.StartNew((index) =>
 				{
-					renderer.BeginDocument("-");
-					int pageNumber = 1;
-					foreach(string imagePath in sourceImagesPaths){
-						using (var img = Pix.LoadFromFile(imagePath))
-						{
-							using (var page = engine.Process(img))
-							{
-								renderer.AddPage(page);
-								string pageContent = page.GetText();
-								result.Transcripts[pageNumber - 1] = FormatTranscript(pageContent, 80);
-							}
-						}
-						pageNumber++;
-					}
-				}	
+					Console.WriteLine($"Start task #{index}");
+					PageRender render = PageRender.Render(sourceImagesPaths[(int)index], new TesseractEngine(tesseractData, languageCode, EngineMode.Default));
+					result.Transcripts[(int)index] = FormatTranscript(render.GetPage().GetText(), 80);
+					Console.WriteLine($"Task #{index} done!");
+					return render;
+				}, i);
+			}
+
+			Task.WaitAll(tasks);
+			Console.WriteLine("All tasks done!");
+
+			using (var renderer = PdfResultRenderer.CreatePdfRenderer(pdfFileNameWithoutPdfExtension, tesseractData, false))
+			{
+				renderer.BeginDocument("-");
+				foreach(Task<PageRender> t in tasks){
+					renderer.AddPage(t.Result.GetPage());
+				}
+			}
+
+			Console.WriteLine("PDF generated!");
+
+			foreach (Task<PageRender> t in tasks){
+				t.Result.Dispose();
 			}
 
 			return result;
@@ -69,6 +80,33 @@ namespace docs
 			raw = Regex.Replace(raw, @"[ ]{2,}", @" ", RegexOptions.None);
 
 			return raw;
+		}
+
+		public class PageRender : IDisposable
+		{
+			private TesseractEngine engine;
+			private Page page;
+
+			private PageRender(TesseractEngine engine, Page page)
+			{
+				this.page = page;
+				this.engine = engine;
+			}
+
+			public static PageRender Render(string imagePath, TesseractEngine engine)
+			{
+				var image = Pix.LoadFromFile(imagePath);
+				return new PageRender(engine, engine.Process(image));
+			}
+
+			public Page GetPage(){
+				return page;
+			}
+
+			public void Dispose()
+			{
+				engine.Dispose();
+			}
 		}
 	}
 }

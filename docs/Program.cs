@@ -27,12 +27,12 @@ namespace docs
 				args = new string[] { "dash" };
 			}
 
-			try{
+			//try{
 				rootCommand.Route(args);
-			}
-			catch(Exception e){
-				Console.WriteLine($"ERROR: {e.Message}");
-			}
+			//}
+			//catch(Exception e){
+				//Console.WriteLine($"ERROR: {e.Message}");
+			//}
 		}
 
 		static void ShowDashCommand(string[] args)
