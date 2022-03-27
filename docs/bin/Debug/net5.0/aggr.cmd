@@ -16,7 +16,7 @@ pause
 echo:
 set /p tags=Enter tags [t1,t2,t3]:
 
-docs %source% -t %tags%
+docs add %source% -t %tags% 
 
 set /a count=count+1
 echo ------------------------------------------

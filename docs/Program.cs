@@ -27,9 +27,13 @@ namespace docs
 				args = new string[] { "dash" };
 			}
 
-			rootCommand.Route(args);
+			try{
+				rootCommand.Route(args);
+			}
+			catch(Exception e){
+				Console.WriteLine($"ERROR: {e.Message}");
+			}
 		}
-
 
 		static void ShowDashCommand(string[] args)
 		{
@@ -70,43 +74,55 @@ namespace docs
 		{
 			Arguments arguments = Arguments.Parse(args,
 				new string[] { "path" },
-				new string[] { "tags", "filter", "language" },
-				new string[] { "t", "f", "l" },
-				new string[] { "", "*.*", "deu" },
+				new string[] { "tags", "filter", "language", "sort" },
+				new string[] { "t", "f", "l", "s" },
+				new string[] { "", "*.*", "deu", "date" },
 				new string[] { },
 				new string[] { }
 				);
 
 			string[] tags = ParseList(arguments.GetArgument("tags"), ",");
 			string path = arguments.GetArgument("path");
-			string[] files;
 
+			string[] files = new string[] { };
 			if (File.Exists(path))
 			{
 				files = new string[] { path };
 			}
-			if (!Directory.Exists(path))
+			else
 			{
-				throw new DirectoryNotFoundException();
+				if (!Directory.Exists(path)){
+					throw new DirectoryNotFoundException();
+				}
+
+				files = Directory.GetFiles(path, arguments.GetArgument("filter"));
+				string sortModeName = arguments.GetArgument("sort");
+				switch (sortModeName)
+				{
+					case "date":
+						files = files.Select(fn => new FileInfo(fn)).OrderBy(f => f.CreationTimeUtc).Select(fn => fn.FullName).ToArray();
+						break;
+					case "name":
+						files = files.Select(fn => new FileInfo(fn)).OrderBy(f => f.Name).Select(fn => fn.FullName).ToArray();
+						break;
+					default:
+						throw new Exception($"invalid sort-mode '{sortModeName}'");
+				}
 			}
 
-			files = Directory.GetFiles(path, arguments.GetArgument("filter"));
-			if (files.Length == 0)
-			{
+			if (files.Length == 0){
 				Console.WriteLine("No files selected, quitting ...");
 				return;
 			}
 
 			Console.WriteLine("files:");
-			foreach (string f in files)
-			{
+			foreach (string f in files){
 				Console.WriteLine(f);
 			}
 
 			Console.WriteLine();
 			Console.WriteLine("tags:");
-			foreach (string t in tags)
-			{
+			foreach (string t in tags){
 				Console.WriteLine(t);
 			}
 
@@ -116,7 +132,6 @@ namespace docs
 			DocumentData doc = DocumentData.Aggregate(directory + @"\tessdata", files, arguments.GetArgument("language"));
 			Console.WriteLine("ocr done!");
 			Console.WriteLine();
-
 
 			Vault vault = Vault.Init(vaultDirectory);
 			Console.WriteLine($"addet document to vault -> id={vault.AddDocument(doc.Transcripts, doc.PdfFilePath, tags, null)}");

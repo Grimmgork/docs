@@ -39,8 +39,7 @@ namespace docs
 					}
 				}
 
-				Console.WriteLine($"Command {sub} not found!");
-				return;
+				throw new Exception($"404 subcommand '{sub}' not found! :(");
 			}
 
 			Run(args);

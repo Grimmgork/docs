@@ -19,7 +19,6 @@ namespace docs
 
 		public static Arguments Parse(string[] args, string[] mandatoryArguments, string[] options, string[] optionShortcuts, string[] optionDefaultValues, string[] switches, string[] switchShortcuts)
 		{
-
 			Dictionary<string, string> _values = new Dictionary<string, string>();
 			HashSet<string> _switches = new HashSet<string>();
 
@@ -56,7 +55,7 @@ namespace docs
 						arg = args[i];
 						if (arg.StartsWith("-"))
 						{
-							throw new ArgumentOutOfRangeException("Value missing!");
+							throw new Exception($"Value of -{shc} missing!");
 						}
 						_values[name] = arg;
 					}
@@ -64,12 +63,12 @@ namespace docs
 				else
 				{
 					_values.Add(mandatoryArguments[mandIndex], arg);
+					mandIndex++;
 				}
 			}
 
-			if (mandIndex < mandatoryArguments.Length - 1)
-			{
-				throw new ArgumentException("Argument missing!");
+			if (mandIndex < mandatoryArguments.Length){
+				throw new ArgumentException($"Mandatory argument '{mandatoryArguments[mandIndex]}' missing!");
 			}
 
 			return new Arguments(_switches, _values);

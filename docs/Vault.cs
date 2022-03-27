@@ -146,8 +146,9 @@ namespace docs
 			result += "---\n";
 			result += $"# 📁 *{id}*\n";
 			result += "\n";
-			result += $"📑 -> [[{GetScanName(id)}.pdf]]\n";
-			for(int i = 0; i < n; i++){
+			result += $"📑 -> [[{GetScanName(id)}.pdf|pdf]]\n";
+			result += $"![[{GetScanName(id)}.pdf]]\n";
+			for (int i = 0; i < n; i++){
 				result += $"{i+1}. 📜 -> [[{GetTranscriptName(id, i+1)}]]";
 				if(i < n-1){
 					result += "\n";
