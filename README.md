@@ -6,7 +6,6 @@ The content of the documents can then be searched for in obsidian.
 The transcripts are conveniently linked to the original PDF.
 
 ## dependencies:
-https://github.com/tesseract-ocr/tesseract
-https://github.com/charlesw/tesseract/
-and Obsidian to use the database:
-https://github.com/obsidianmd
+- https://github.com/tesseract-ocr/tesseract
+- https://github.com/charlesw/tesseract/
+- and Obsidian to use the database: https://github.com/obsidianmd
